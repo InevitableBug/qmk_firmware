@@ -24,7 +24,8 @@ extern keymap_config_t keymap_config;
 
 enum planck_layers {
   _QWERTY,
-  _CAPS_LAYER,
+  _CAPS_LAYER_A,
+  _GAME_LAYER,
   _COLEMAK,
   _DVORAK,
   _LOWER,
@@ -32,7 +33,8 @@ enum planck_layers {
   _PLOVER,
   _ADJUST,
   _MOV_LAYER,
-  _NUM_LAYER
+  _NUM_LAYER,
+  _CAPS_LAYER_B
 };
 
 enum planck_keycodes {
@@ -43,7 +45,9 @@ enum planck_keycodes {
   LOWER,
   RAISE,
   BACKLIT,
-  EXT_PLV
+  EXT_PLV,
+  ENT_CAPS,
+  EXT_CAPS
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -66,12 +70,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   {TT(_NUM_LAYER), KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   LT(_MOV_LAYER, KC_LEFT), KC_DOWN, KC_UP,   KC_RGHT}
 },
 
-[_CAPS_LAYER] = {
-  {KC_TAB,  S(KC_Q),    S(KC_W),    S(KC_E),    S(KC_R),    S(KC_T),    S(KC_Y),    S(KC_U),    S(KC_I),    S(KC_O),   S(KC_P),  KC_BSPC},
-  {TG(_CAPS_LAYER),  S(KC_A),    S(KC_S),    S(KC_D),    S(KC_F),    S(KC_G),    S(KC_H),    S(KC_J),    S(KC_K),    S(KC_L),    KC_SCLN, KC_QUOT},
-  {OSM(MOD_LSFT), S(KC_Z),    S(KC_X),    S(KC_C),    S(KC_V),    S(KC_B),    S(KC_N),    S(KC_M),    KC_COMM, KC_DOT,  KC_SLSH, MT(MOD_RSFT, KC_ENT) },
-  {TT(_NUM_LAYER), KC_LCTL, KC_LALT, KC_LGUI, LOWER, KC_SPC,  KC_SPC,  RAISE,   LT(_MOV_LAYER, KC_LEFT), KC_DOWN, KC_UP,   KC_RGHT}
+[_CAPS_LAYER_A] = {
+  {_______,  S(KC_Q), S(KC_W), S(KC_E), S(KC_R), S(KC_T), S(KC_Y), S(KC_U), S(KC_I), S(KC_O), S(KC_P), _______},
+  {_______,  S(KC_A), S(KC_S), S(KC_D), S(KC_F), S(KC_G), S(KC_H), S(KC_J), S(KC_K), S(KC_L), _______, _______},
+  {_______,  S(KC_Z), S(KC_X), S(KC_C), S(KC_V), S(KC_B), S(KC_N), S(KC_M), _______, _______, _______, _______},
+  {_______,  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______}
 },
+
+[_CAPS_LAYER_B] = {
+  {EXT_CAPS, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______},
+  {EXT_CAPS, _______, _______, _______, _______, _______, _______, _______, _______, _______, EXT_CAPS, EXT_CAPS},
+  {_______, _______, _______, _______, _______, _______, _______, _______, EXT_CAPS, EXT_CAPS, _______, _______},
+  {_______, _______, _______, _______, _______, EXT_CAPS, EXT_CAPS, _______, _______, _______, _______, _______},
+},
+
+
+[_GAME_LAYER] = {
+  {KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC},
+  {KC_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT},
+  {MOD_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, MT(MOD_RSFT, KC_ENT) },
+  {TT(_NUM_LAYER), KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   LT(_MOV_LAYER, KC_LEFT), KC_DOWN, KC_UP,   KC_RGHT}
+},
+
 
 /* Qwerty
  * ,-----------------------------------------------------------------------------------.
@@ -104,7 +124,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_MOV_LAYER] = {
   {_______, KC_MS_BTN2, KC_MS_UP,   KC_MS_BTN1,  KC_MS_ACCEL2, _______, _______, _______, KC_UP,   _______,  _______,  _______},
-  {TG(_CAPS_LAYER), KC_MS_LEFT, KC_MS_DOWN, KC_MS_RIGHT, KC_MS_ACCEL1, _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT, _______,  _______},
+  {ENT_CAPS, KC_MS_LEFT, KC_MS_DOWN, KC_MS_RIGHT, KC_MS_ACCEL1, _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT, _______,  _______},
   {_______, _______,    _______,    _______,     KC_MS_ACCEL0, _______, _______, _______, _______, _______,  _______,  _______},
   {_______, _______,    _______,    _______,     _______,      _______, _______, _______, _______, _______,  _______,  _______},
 },
@@ -213,7 +233,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_ADJUST] = {
   {_______, RESET,   DEBUG,   _______, _______, _______, _______, TERM_ON, TERM_OFF,_______, _______, KC_DEL },
-  {_______, _______, MU_MOD,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, _______,  _______, _______,  _______,  _______},
+  {_______, _______, MU_MOD,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, TG(_GAME_LAYER),  _______, _______,  _______,  _______},
   {_______, MUV_DE,  MUV_IN,  MU_ON,   MU_OFF,  MI_ON,   MI_OFF,  _______, _______, _______, _______, _______},
   {_______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______}
 }
@@ -306,6 +326,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
+    case ENT_CAPS:
+      if (record->event.pressed) {
+        layer_on(_CAPS_LAYER_A);
+        layer_on(_CAPS_LAYER_B);
+        return false;
+        break;
+      }
+    case EXT_CAPS:
+      if (record->event.pressed) {
+        layer_off(_CAPS_LAYER_A);
+        layer_off(_CAPS_LAYER_B);
+        return true;
+        break;
+      }
   }
   return true;
 }
