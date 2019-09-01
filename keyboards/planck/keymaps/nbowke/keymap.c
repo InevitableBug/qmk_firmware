@@ -17,9 +17,6 @@
 #include "planck.h"
 #include "action_layer.h"
 
-#define TAPPING_TOGGLE 2
-#define ONESHOT_TAP_TOGGLE 2
-
 extern keymap_config_t keymap_config;
 
 enum planck_layers {
@@ -28,12 +25,12 @@ enum planck_layers {
   _GAME_LAYER,
   _COLEMAK,
   _DVORAK,
+  _MOV_LAYER,
+  _NUM_LAYER,
   _LOWER,
   _RAISE,
   _PLOVER,
   _ADJUST,
-  _MOV_LAYER,
-  _NUM_LAYER,
   _CAPS_LAYER_B
 };
 
@@ -47,7 +44,8 @@ enum planck_keycodes {
   BACKLIT,
   EXT_PLV,
   ENT_CAPS,
-  EXT_CAPS
+  EXT_CAPS,
+  ENT_GAME
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -67,7 +65,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   {KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC},
   {KC_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT},
   {OSM(MOD_LSFT), KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, MT(MOD_RSFT, KC_ENT) },
-  {TT(_NUM_LAYER), KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   LT(_MOV_LAYER, KC_LEFT), KC_DOWN, KC_UP,   KC_RGHT}
+  {MO(_NUM_LAYER), KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   LT(_MOV_LAYER, KC_LEFT), KC_DOWN, KC_UP,   KC_RGHT}
 },
 
 [_CAPS_LAYER_A] = {
@@ -88,8 +86,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_GAME_LAYER] = {
   {KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC},
   {KC_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT},
-  {MOD_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, MT(MOD_RSFT, KC_ENT) },
-  {TT(_NUM_LAYER), KC_LCTL, KC_LALT, KC_LGUI, LOWER,   KC_SPC,  KC_SPC,  RAISE,   LT(_MOV_LAYER, KC_LEFT), KC_DOWN, KC_UP,   KC_RGHT}
+  {KC_LSHIFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, MT(MOD_RSFT, KC_ENT) },
+  {MO(_NUM_LAYER), KC_LCTL, KC_LALT, KC_NO, LOWER,   KC_SPC,  KC_SPC,  RAISE,   LT(_MOV_LAYER, KC_LEFT), KC_DOWN, KC_UP,   KC_RGHT}
 },
 
 
@@ -107,7 +105,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_NUM_LAYER] = {
   {_______, _______, _______, _______, _______, _______, _______, KC_7,    KC_8,    KC_9,   _______,   _______},
   {_______, _______, _______, _______, _______, _______, _______, KC_4,    KC_5,    KC_6,   _______,   _______},
-  {_______, _______, _______, _______, _______, _______, _______, KC_1,    KC_2,    KC_3,   _______,   _______},
+  {_______, _______, _______, _______, _______, _______, _______, KC_1,    KC_2,    KC_3,   KC_ENT,   _______},
   {_______, _______, _______, _______, _______, _______, _______, _______, KC_0,    KC_DOT, _______,   _______},
 },
 
@@ -123,9 +121,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_MOV_LAYER] = {
-  {_______, KC_MS_BTN2, KC_MS_UP,   KC_MS_BTN1,  KC_MS_ACCEL2, _______, _______, _______, KC_UP,   _______,  _______,  _______},
-  {ENT_CAPS, KC_MS_LEFT, KC_MS_DOWN, KC_MS_RIGHT, KC_MS_ACCEL1, _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT, _______,  _______},
-  {_______, _______,    _______,    _______,     KC_MS_ACCEL0, _______, _______, _______, _______, _______,  _______,  _______},
+  {_______, _______, _______,   _______,  _______, _______, _______, _______, KC_UP,   _______,  _______,  _______},
+  {ENT_CAPS, _______, _______, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_RIGHT, _______,  _______},
+  {_______, _______,    _______,    _______,     _______, _______, _______, _______, _______, _______,  _______,  _______},
   {_______, _______,    _______,    _______,     _______,      _______, _______, _______, _______, _______,  _______,  _______},
 },
 
@@ -180,7 +178,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   {KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_CIRC, KC_AMPR,    KC_ASTR,    KC_LPRN, KC_RPRN, KC_DEL},
   {KC_DEL,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_UNDS,    KC_PLUS,    KC_LCBR, KC_RCBR, KC_PIPE},
   {_______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  S(KC_NUHS), S(KC_NUBS), KC_HOME, KC_END,  _______},
-  {_______, _______, _______, _______, _______, _______, _______, _______,    KC_MPLY,    KC_VOLD, KC_VOLU, KC_MNXT}
+  {_______, _______, _______, KC_LGUI, _______, _______, _______, _______,    KC_MPLY,    KC_VOLD, KC_VOLU, KC_MNXT}
 },
 
 /* Raise
@@ -233,7 +231,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_ADJUST] = {
   {_______, RESET,   DEBUG,   _______, _______, _______, _______, TERM_ON, TERM_OFF,_______, _______, KC_DEL },
-  {_______, _______, MU_MOD,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, TG(_GAME_LAYER),  _______, _______,  _______,  _______},
+  {_______, _______, MU_MOD,  AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, ENT_GAME,  _______, _______,  _______,  _______},
   {_______, MUV_DE,  MUV_IN,  MU_ON,   MU_OFF,  MI_ON,   MI_OFF,  _______, _______, _______, _______, _______},
   {_______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______}
 }
@@ -244,6 +242,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #ifdef AUDIO_ENABLE
   float plover_song[][2]     = SONG(PLOVER_SOUND);
   float plover_gb_song[][2]  = SONG(PLOVER_GOODBYE_SOUND);
+  float game_song[][2]    = SONG(NUM_LOCK_ON_SOUND);
 #endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -339,6 +338,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_CAPS_LAYER_B);
         return true;
         break;
+      }
+    case ENT_GAME:
+      if (record->event.pressed) {
+        layer_invert(_GAME_LAYER);
+        #ifdef AUDIO_ENABLE
+            PLAY_SONG(game_song);
+        #endif
       }
   }
   return true;
